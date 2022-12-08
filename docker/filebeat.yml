@@ -1,0 +1,58 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /home/csv/*-*-*.csv
+
+filebeat.config.modules:
+  path: /etc/filebeat/modules.d/*.yml
+  reload.enabled: false
+
+setup.template:
+  enabled: false
+  settings:
+    index.number_of_shards: 2
+
+setup.kibana:
+#  host: "kibana.elk.svc.cluster.local:5601"
+  host: "kibana.tzcorp.com"
+
+output.elasticsearch:
+  protocol: https
+  ssl.verification_mode: none
+  hosts: ["es1.elk.ekscluster.tzcorp.com:443"]
+  username: 'elastic'
+  password: 'xxxx'
+  pipeline: jmeter
+  index: "jmeter-%{[dissect.account]}-%{[dissect.yyyymmdd]}"
+
+processors:
+  - decode_csv_fields:
+      fields:
+        message: decoded.csv
+      separator: ","
+      ignore_missing: false
+      overwrite_keys: true
+      trim_leading_space: false
+      fail_on_error: true
+
+  - dissect:
+      field: log.file.path
+      tokenizer: "/home/csv/%{account}-%{project}-%{yyyymmdd}.csv"
+
+  - timestamp:
+      field: timeStamp
+      layouts:
+        - '2006-01-02T15:04:05Z'
+        - '2006-01-02T15:04:05.999Z'
+        - '2006-01-02T15:04:05.999-07:00'
+      test:
+        - '2019-06-22T16:33:51Z'
+        - '2019-11-18T04:59:51.123Z'
+        - '2020-08-03T07:10:20.123456+02:00'
+
+logging.level: debug
+monitoring.enabled: false
+
+setup.ilm.enabled: false
+

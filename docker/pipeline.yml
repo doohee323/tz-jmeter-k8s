@@ -1,0 +1,83 @@
+PUT _ingest/pipeline/jmeter
+{
+  "description" : "jmeter data ingestion",
+  "processors": [
+    {
+      "csv": {
+        "field": "message",
+        "target_fields": [
+            "timeStamp","elapsed","label","responseCode","responseMessage","threadName","dataType","success","failureMessage","bytes","sentBytes","grpThreads","allThreads","URL","Latency","IdleTime","Connect"
+        ]
+      }
+    },
+    {
+      "date": {
+        "field": "timeStamp",
+        "target_field": "timeStamp",
+        "formats" : ["UNIX_MS"],
+        "timezone": "Asia/Seoul"
+      }
+    },
+    {
+      "convert": {
+        "field": "elapsed",
+        "type": "integer"
+      }
+    },
+    {
+      "convert": {
+        "field": "responseCode",
+        "type": "integer"
+      }
+    },
+    {
+      "convert": {
+        "field": "bytes",
+        "type": "double"
+      }
+    },
+    {
+      "convert": {
+        "field": "sentBytes",
+        "type": "double"
+      }
+    },
+    {
+      "convert": {
+        "field": "Latency",
+        "type": "integer"
+      }
+    },
+    {
+      "convert": {
+        "field": "IdleTime",
+        "type": "double"
+      }
+    },
+    {
+      "convert": {
+        "field": "Connect",
+        "type": "integer"
+      }
+    }
+  ]
+}
+
+
+#PUT _template/jmeter_1
+#{
+#  "index_patterns": ["jmeter-*"],
+#  "settings": {
+#    "number_of_shards": 1
+#  },
+#  "mappings": {
+#    "_source": {
+#      "enabled": false
+#    },
+#    "properties": {
+#      "@timestamp": {
+#        "type": "date"
+#      }
+#    }
+#  }
+#}

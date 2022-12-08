@@ -1,0 +1,112 @@
+pipeline {
+   agent any
+
+   environment {
+        GIT_URL = "https://github.com/topzone/tz-devops-jmeter.git"
+        TAG_ID = "${env.BUILD_NUMBER}"
+//         TAG_ID = "latest"
+        DOCKER_NAME = "devops-jmeter"    // DOCKER_NAME
+        DOCKER_NAME_BASE = "tz-jmeter-base"    // DOCKER_NAME_BASE
+        APP_NAME = "devops-jmeter"
+        NAMESPACE = "devops"
+        STAGING = "${env.BRANCH_NAME == "main" ? "prod" : env.BRANCH_NAME == "qa" ? "qa" : "dev"}"
+        K8S_SOURCE = "${env.BRANCH_NAME == "main" ? "k8s.yaml" : env.BRANCH_NAME == "qa" ? "k8s-qa.yaml" : "k8s-dev.yaml"}"
+        BRANCH_ROLLOUT = "true"
+        K8S_FILE = "k8s.yaml"
+//         FORCED_PROD = "true"
+
+        // *** for changing cluster ***
+        AWS_REGION = "ap-northeast-2"
+        CLUSTER_NAME = "ekscluster"
+        DOMAIN_NAME = "tzcorp.com"
+        ACCOUNT_ID = "xxxxxxxxxxxxxx"
+
+        REPO_HOST = "${ACCOUNT_ID}" +".dkr.ecr." + "${AWS_REGION}" + ".amazonaws.com"
+        IMAGE_TAG_BASE = "${DOCKER_NAME_BASE}:latest"
+        REPOSITORY_TAG_BASE = "${REPO_HOST}/${IMAGE_TAG_BASE}"
+
+        // *** fixed variables ***
+        GIT_BRANCH = "${env.GIT_BRANCH}"
+        GIT_CREDENTIAL = 'Github'
+        KUBECTL = "kubectl -n " + "${NAMESPACE}" + " --kubeconfig /var/lib/jenkins/.kube/tz_" + "${CLUSTER_NAME}"
+        AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
+        vault_token = credentials('vault_token')
+   }
+
+   stages {
+      stage('Preparation') {
+         steps {
+            cleanWs()
+            git credentialsId: GIT_CREDENTIAL,
+            url: GIT_URL,
+            branch: GIT_BRANCH
+         }
+      }
+      stage('Copy Yaml') {
+         steps {
+            dir("${workspace}"){
+                script{
+                    sh "rm -rf ./" + "${K8S_FILE}"
+                    sh "rm -rf ./Dockerfile"
+                    sh "cp -Rp k8s/" + "${K8S_SOURCE}" + " ./" + "${K8S_FILE}"
+                    sh "cp -Rp docker/Dockerfile ."
+                }
+            }
+         }
+      }
+
+//       stage('Build base') {
+//          steps {
+//             dir("${workspace}"){
+//                 script{
+//                     sh "aws ecr get-login-password --region "+"${AWS_REGION}"+
+//                         " | docker login --username AWS --password-stdin '"+"${ACCOUNT_ID}"+".dkr.ecr."+"${AWS_REGION}"+".amazonaws.com'"
+//                     sh "docker build --no-cache -f docker/Base.Dockerfile -t ${REPOSITORY_TAG_BASE} ."
+//                 }
+//             }
+//          }
+//       }
+//
+//       stage('Push base Image') {
+//          steps {
+//             script {
+//                 sh "docker push "+"${REPO_HOST}"+"/"+"${IMAGE_TAG_BASE}"
+//             }
+//          }
+//       }
+
+      stage('Build') {
+         steps {
+            dir("${workspace}"){
+                script{
+                    sh "bash ./k8s/config.sh "+"${GIT_BRANCH} "+"${STAGING}"
+                    sh "bash /var/lib/jenkins/k8s.sh build"
+                }
+            }
+         }
+      }
+
+      stage('Push Image') {
+         steps {
+            script {
+                sh "bash /var/lib/jenkins/k8s.sh push"
+            }
+         }
+      }
+
+      stage('Deploy the service to Cluster') {
+        steps {
+//             sh "bash /var/lib/jenkins/k8s.sh delete"
+            sh "bash /var/lib/jenkins/k8s.sh apply"
+        }
+      }
+
+//       stage('Verify deployment') {
+//         steps{
+//             sh "bash /var/lib/jenkins/k8s.sh verify"
+//         }
+//       }
+   }
+}
+
