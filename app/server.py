@@ -51,7 +51,7 @@ class S(BaseHTTPRequestHandler):
                 out = "{\"error\": \"cmd is required.\"}"
             elif params['cmd'] == 'import':
                 if params['project'] == 'debug':
-                    ri_cmd = "bash /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/jmeter/import.sh"
+                    ri_cmd = "bash /Volumes/workspace/tz/tz-jmeter-k8s/jmeter/import.sh"
                 else:
                     ri_cmd = "bash /home/jmeter/import.sh"
                 out = self.run_shell(ri_cmd)
@@ -91,8 +91,8 @@ class S(BaseHTTPRequestHandler):
             return 'project is required.'
         # self.run_shell("kill -9 `ps -ef | grep run.sh | awk '{print $2}' | head -n 1`")
         if params['project'] == 'debug':
-            # /bin/bash /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/jmeter/run.sh ${protocol} ${serverAddr} ${serverPort} ${timeSec} ${loopCnt} ${userNumber}
-            ri_cmd = "/bin/bash /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/jmeter/run.sh " + \
+            # /bin/bash /Volumes/workspace/tz/tz-jmeter-k8s/jmeter/run.sh ${protocol} ${serverAddr} ${serverPort} ${timeSec} ${loopCnt} ${userNumber}
+            ri_cmd = "/bin/bash /Volumes/workspace/tz/tz-jmeter-k8s/jmeter/run.sh " + \
                      params['project'] + " " + params['protocol'] + " " + params['serverAddr'] + " " + params['serverPort'] + " " + \
                      params['timeSec'] + " " + params['loopCnt'] + " " + params['userNumber'] + " " + params['jmx']
         else:
@@ -105,7 +105,7 @@ class S(BaseHTTPRequestHandler):
         if params['project'] == '':
             return 'project is required.'
         if params['project'] == 'debug':
-            ri_cmd = "/bin/bash /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/jmeter/broadcast.sh " + \
+            ri_cmd = "/bin/bash /Volumes/workspace/tz/tz-jmeter-k8s/jmeter/broadcast.sh " + \
                      params['project'] + " " + params['protocol'] + " " + params['serverAddr'] + " " + params['serverPort'] + " " + \
                      params['timeSec'] + " " + params['loopCnt'] + " " + params['userNumber'] + " " + params['jmx']
         else:

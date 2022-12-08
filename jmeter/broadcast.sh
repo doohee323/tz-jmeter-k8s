@@ -113,5 +113,5 @@ https://stackoverflow.com/questions/54439263/merge-results-plugin-jmeter-on-non-
 PluginsManagerCMD --tool Reporter --generate-csv merged.csv \
   --input-jtl merge-results.properties --plugin-type MergeResults
 
-/Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/apache-jmeter-5.5/bin/reportgenerator.properties
+/Volumes/workspace/tz/tz-jmeter-k8s/apache-jmeter-5.5/bin/reportgenerator.properties
 

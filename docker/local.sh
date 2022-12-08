@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd /vagrant/projects/tz-devops-jmeter
+cd /vagrant/projects/tz-jmeter-k8s
 
 brew install python
 brew info python
@@ -22,20 +22,20 @@ exit 0
 
 
 # make docker image
-cd tz-k8s-vagrant/projects/tz-devops-jmeter
+cd tz-k8s-vagrant/projects/tz-jmeter-k8s
 #vi Dockerfile
 #CMD [ "python", "/home/app/server.py" ]
 #sudo chown -Rf vagrant:vagrant /var/run/docker.sock
 #docker login -u="$USERNAME" -p="$PASSWD"
-#docker rmi tz-devops-jmeter -f
-#docker build -t tz-devops-jmeter .
+#docker rmi tz-jmeter-k8s -f
+#docker build -t tz-jmeter-k8s .
 #docker image ls
-#docker tag tz-devops-jmeter:latest topzone/tz-devops-jmeter:latest
-#docker push topzone/tz-devops-jmeter:latest
+#docker tag tz-jmeter-k8s:latest topzone/tz-jmeter-k8s:latest
+#docker push topzone/tz-jmeter-k8s:latest
 
-docker run -p 8000:8000 tz-devops-jmeter
+docker run -p 8000:8000 tz-jmeter-k8s
 
-docker run -d -v `pwd`:/home -p 8000:8000 tz-devops-jmeter
+docker run -d -v `pwd`:/home -p 8000:8000 tz-jmeter-k8s
 #docker ps
 #docker exec -it a7757a1e1c99 /bin/bash
 

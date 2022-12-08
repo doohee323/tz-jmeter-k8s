@@ -2,7 +2,7 @@ pipeline {
    agent any
 
    environment {
-        GIT_URL = "https://github.com/topzone/tz-devops-jmeter.git"
+        GIT_URL = "https://github.com/topzone/tz-jmeter-k8s.git"
         TAG_ID = "${env.BUILD_NUMBER}"
 //         TAG_ID = "latest"
         DOCKER_NAME = "devops-jmeter"    // DOCKER_NAME

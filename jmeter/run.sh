@@ -57,18 +57,18 @@ if [[ "${project}" == "debug" ]]; then
   kill -9 `ps -ef | grep filebeat | awk '{print $2}' | head -n 1`
   #rm -Rf /Volumes/workspace/tz/filebeat-7.13.2-darwin-x86_64/data/filebeat.lock
   rm -Rf /Volumes/workspace/tz/filebeat-7.13.2-darwin-x86_64/data/registry
-  rm -Rf /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/jmeter/*.csv
-  bash /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/apache-jmeter-5.5/bin/jmeter.sh \
-    -n -t /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/jmeter/${jmx} \
-    -l /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/csv/${resultFile} \
-    -JcsvFile=/Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/jmeter/userlist.csv \
+  rm -Rf /Volumes/workspace/tz/tz-jmeter-k8s/jmeter/*.csv
+  bash /Volumes/workspace/tz/tz-jmeter-k8s/apache-jmeter-5.5/bin/jmeter.sh \
+    -n -t /Volumes/workspace/tz/tz-jmeter-k8s/jmeter/${jmx} \
+    -l /Volumes/workspace/tz/tz-jmeter-k8s/csv/${resultFile} \
+    -JcsvFile=/Volumes/workspace/tz/tz-jmeter-k8s/jmeter/userlist.csv \
     -Jprotocol=${protocol} \
     -JserverAddr=${serverAddr} \
     -JserverPort=${serverPort} \
     -JtimeSec=${timeSec} \
     -JloopCnt=${loopCnt} \
     -JuserNumber=${userNumber} && \
-  /Volumes/workspace/tz/filebeat-7.13.2-darwin-x86_64/filebeat run -e -c /Volumes/workspace/tz/tz-devops-utils/projects/tz-devops-jmeter/docker/filebeat_local.yml
+  /Volumes/workspace/tz/filebeat-7.13.2-darwin-x86_64/filebeat run -e -c /Volumes/workspace/tz/tz-jmeter-k8s/docker/filebeat_local.yml
 else
   rm -Rf /home/csv/*.csv
   bash /opt/jmeter/bin/jmeter -n -t /home/jmeter/${jmx} -l /home/csv/${resultFile} \

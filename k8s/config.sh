@@ -8,7 +8,7 @@ STAGING=$2
 export GIT_BRANCH=$(echo ${GIT_BRANCH} | sed 's/\//-/g')
 GIT_BRANCH=$(echo ${GIT_BRANCH} | cut -b1-21)
 
-bash /var/lib/jenkins/vault.sh get devops-prod tz-devops-jmeter resources
+bash /var/lib/jenkins/vault.sh get devops-prod tz-jmeter-k8s resources
 tar xvfz resources.zip && rm -Rf resources.zip
 
 cp -Rf resources/config config
@@ -19,9 +19,9 @@ exit 0
 
 - push
 #export vault_token=xxx
-#cd /vagrant/projects/tz-devops-jmeter
-#bash /vagrant/tz-local/docker/vault.sh put devops-prod tz-devops-jmeter resources
+#cd /vagrant/projects/tz-jmeter-k8s
+#bash /vagrant/tz-local/docker/vault.sh put devops-prod tz-jmeter-k8s resources
 
 - get
-bash /var/lib/jenkins/vault.sh get devops-prod tz-devops-jmeter resources
+bash /var/lib/jenkins/vault.sh get devops-prod tz-jmeter-k8s resources
 tar xvfz resources.zip && rm -Rf resources.zip

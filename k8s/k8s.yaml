@@ -22,23 +22,6 @@ spec:
       - name: devops-jmeter
         image: ${REPOSITORY_TAG}
         imagePullPolicy: Always
-#        volumeMounts:
-#        - name: workdir
-#          mountPath: /home/csv
-#        readinessProbe:
-#          httpGet:
-#            path: /health
-#            port: 8000
-#      initContainers:
-#      - name: filebeat
-#        image: ${REPOSITORY_TAG}
-#        command: ["/usr/bin/filebeat", "run", "-e", "-d", "*"]
-#        volumeMounts:
-#        - name: workdir
-#          mountPath: "/home/csv"
-        envFrom:
-        - configMapRef:
-            name: devops-jmeter-configmap
         resources:
           requests:
             memory: '2Gi'
@@ -46,9 +29,6 @@ spec:
           limits:
             memory: '3Gi'
             cpu: '2000m'
-#      volumes:
-#      - name: workdir
-#        emptyDir: {}
       nodeSelector:
         team: devops
         environment: jmeter
@@ -72,16 +52,6 @@ spec:
 
 ---
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: devops-jmeter-configmap
-data:
-  GIT_BRANCH: ${GIT_BRANCH}
-  DB_HOSTNAME: host.docker.internal
-  DB_R_HOSTNAME: host.docker.internal
-
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

@@ -6,9 +6,9 @@ set -x
 #bash build.sh debug2
 #apt install docker-compose -y
 
-#bash /vagrant/projects/tz-devops-jmeter/build.sh debug3
+#bash /vagrant/projects/tz-jmeter-k8s/build.sh debug3
 
-TZ_PROJECT=tz-devops-jmeter
+TZ_PROJECT=tz-jmeter-k8s
 cd /vagrant/projects/${TZ_PROJECT}/docker
 
 VERSION='latest'

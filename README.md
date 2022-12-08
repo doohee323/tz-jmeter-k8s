@@ -1,4 +1,4 @@
-# tz-devops-jmeter
+# tz-jmeter-k8s
 
 ## Run Jmeter in K8S
 
@@ -38,6 +38,11 @@ If you don't use ES, you need to gather the result files(csv) from the each of u
 ```
 
 ### Main Files)
+- Jmeter scripts
+``` 
+    jmeter/1-https.jmx
+```
+
 - run.sh
 ```
   bash /opt/jmeter/bin/jmeter -n -t /home/jmeter/${jmx} -l /home/csv/${resultFile} \

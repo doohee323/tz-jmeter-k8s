@@ -2,6 +2,6 @@ version: '3.4'
 
 services:
   main:
-    image: tz-devops-jmeter
+    image: tz-jmeter-k8s
     build: ./
 #    command: 'sleep 30000'
